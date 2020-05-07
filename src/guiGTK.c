@@ -41,7 +41,6 @@ static void somme (GtkWidget *widget, gpointer data)
     char nomTube[20] = "guiCalcul.fifo";
 
     sprintf(chaineAEcrire, "1 %d %d",a,b);
-    printf("%s\n", chaineAEcrire);
 
     mkfifo(nomTube, 0644);
     entreeTube = open(nomTube, O_WRONLY);
@@ -61,6 +60,7 @@ static void somme (GtkWidget *widget, gpointer data)
 
     read(sortieTube, res, 20);
     gtk_label_set_text (GTK_LABEL(resultLabel), res);
+    remove(nomCalculGuiTube);
 }
 
 
@@ -80,7 +80,6 @@ static void produit (GtkWidget *widget, gpointer data)
 
 
     sprintf(chaineAEcrire, "2 %d %d",a,b);
-    printf("%s\n", chaineAEcrire);
 
     mkfifo(nomTube, 0644);
     entreeTube = open(nomTube, O_WRONLY);
@@ -100,6 +99,7 @@ static void produit (GtkWidget *widget, gpointer data)
 
     read(sortieTube, res, 20);
     gtk_label_set_text (GTK_LABEL(resultLabel), res);
+    remove(nomCalculGuiTube);
 }
 
 
@@ -119,13 +119,11 @@ static void factorielle (GtkWidget *widget, gpointer data)
 
 
     sprintf(chaineAEcrire, "3 %d",a);
-    printf("%s\n", chaineAEcrire);
 
     mkfifo(nomTube, 0644);
     entreeTube = open(nomTube, O_WRONLY);
  
     write(entreeTube, chaineAEcrire, 20);
-
 
     // Lecture du resultat
     int sortieTube;
@@ -139,6 +137,7 @@ static void factorielle (GtkWidget *widget, gpointer data)
 
     read(sortieTube, res, 20);
     gtk_label_set_text (GTK_LABEL(resultLabel), res);
+    remove(nomCalculGuiTube);
 }
 
 
@@ -162,7 +161,7 @@ static void activate (GtkApplication *app, gpointer user_data)
 {
     window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), "TP3 - Pipes and Filters");
-    gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
+    gtk_window_set_default_size (GTK_WINDOW (window), 500, 280);
 
 
     main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);

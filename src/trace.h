@@ -6,9 +6,4 @@ typedef struct
 } operation;
 
 //typedef operation tabl[10];
-
-
-
 //void lireop(tabl* x);
-
-
