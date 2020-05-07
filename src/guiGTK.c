@@ -30,8 +30,8 @@ static void print_hello (GtkWidget *widget, gpointer data)
 
 static void somme (GtkWidget *widget, gpointer data)
 {
-     int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry)));
-    int b = atoi(gtk_entry_get_text ((GTK_ENTRY(op1Entry))));
+    int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry)));
+    int b = atoi(gtk_entry_get_text ((GTK_ENTRY(op2Entry))));
 
 
     remove("guiCalcul.fifo");
@@ -51,21 +51,25 @@ static void somme (GtkWidget *widget, gpointer data)
     entreeTube = open(nomTube, O_WRONLY);
  
     write(entreeTube, chaineAEcrire, 20);
-    printf("%s\n", chaineAEcrire);
 
 
     // Lecture du resultat
-    /*int sortieTube;
+    int sortieTube;
     char nomCalculGuiTube[20] = "calcul-gui.fifo";
     char resultatALire[20];
 
-    sortieTube = open ("calcul-gui.fifo", O_RDONLY);
+    while((sortieTube = open ("calcul-gui.fifo", O_RDONLY)) == -1)
+    {
+        usleep(20000);
+    }
+
+    //sortieTube = open ("calcul-gui.fifo", O_RDONLY);
     read(sortieTube, res, 20);
 
-    remove("calcul-gui.fifo");
+    //remove("calcul-gui.fifo");
     printf("res = %s\n", res);
 
-    gtk_label_set_text (GTK_LABEL(resultLabel), res);*/
+    gtk_label_set_text (GTK_LABEL(resultLabel), res);
 }
 
 

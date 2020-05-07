@@ -18,6 +18,7 @@ int main(int argc, char const *argv[])
 	char chaineALire[20];
 	char chaineAEcrire[20];
 	char chaineResultat[20];
+	FILE *f = fopen("tst.val" , "w");
 
 	while(1)
 	{
@@ -32,13 +33,13 @@ int main(int argc, char const *argv[])
 		int commande, op1, op2, resultat;
 
 		//======================== Calcul vers GUI ==========================
-		/*remove("calcul-gui.fifo");
+		/*remove("calcul-gui.fifo");*/
 
 		int calculGuiTube;
 		char nomCalculGuiTUbe[20] = "calcul-gui.fifo";
 
 		mkfifo(nomCalculGuiTUbe, 0644);
-		calculGuiTube = open("calcul-gui.fifo", O_WRONLY);*/
+		calculGuiTube = open(nomCalculGuiTUbe, O_WRONLY);
 
 		//======================== Calcul vers trace ==========================
 
@@ -69,7 +70,8 @@ int main(int argc, char const *argv[])
 				sscanf(chaineALire, "%d %d %d", &commande, &op1, &op2);
 				resultat = op1 + op2;
 				sprintf(chaineAEcrire, "1 %d %d %d\n", op1, op2, resultat);
-				sprintf(chaineResultat, "%d",resultat);
+				sprintf(chaineResultat, "%d", resultat);
+				fprintf(f, "%s\n", chaineResultat);
 			break;
 			case '2': // Produit
 				sscanf(chaineALire, "%d %d %d", &commande, &op1, &op2);
@@ -86,8 +88,8 @@ int main(int argc, char const *argv[])
 		}
 
 		write(entreeTube, chaineAEcrire, 20); // Send to trace
-		//write(calculGuiTube, chaineResultat, 20); // Send to GUI
+		write(calculGuiTube, chaineResultat, 20); // Send to GUI
 	}
-
+	fclose(f);
 	return 0;
 }
