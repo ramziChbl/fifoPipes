@@ -55,16 +55,12 @@ int main(int argc, char const *argv[])
         else if(chaineALire[0] == '3')
         {
             sscanf(chaineALire, "%d %d %d", &commande, &op1, &resultat);
-            //printf("facto recu\n");
-            //printf("3 %d %d\n", op1, resultat);
             saveFact(3, op1, resultat);
         }
         else
         {
             sscanf(chaineALire, "%d %d %d %d", &commande, &op1, &op2, &resultat);
             savop(commande, op1, op2, resultat);
-            //printf("op recu\n");
-            //printf("%d %d %d %d\n", commande, op1, op2, resultat);
         }
     }
     return 0;

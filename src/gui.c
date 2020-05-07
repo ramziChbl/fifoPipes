@@ -24,6 +24,9 @@ int main(int argc, char const *argv[]){
 	int choix = 1;
 	while(choix)
 	{
+    	remove("guiCalcul.fifo");
+		remove("calcul-trace.fifo");
+		remove("calcul-gui.fifo");
     	choix = affichmenu();
     	execomnd(choix);
     }
@@ -68,6 +71,8 @@ void execomnd(int com)
 				exit(EXIT_FAILURE);
 			}
 			write(entreeTube, "0", 10);
+
+			return 0;
  			break;
  		}
 	 	

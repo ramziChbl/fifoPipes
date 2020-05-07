@@ -33,27 +33,34 @@ static void somme (GtkWidget *widget, gpointer data)
     int entreeTube;
     char nomTube[20] = "guiCalcul.fifo";
 
+
     int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry))), b = atoi(gtk_entry_get_text ((GTK_ENTRY(op1Entry))));
     char res[10];
     char chaineAEcrire[20];
+    
     sprintf(chaineAEcrire, "1 %d %d",a,b);
 
-    if(mkfifo(nomTube, 0644) != 0) 
-    {
-        fprintf(stderr, "Impossible de créer le tube nommé.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if((entreeTube = open(nomTube, O_WRONLY)) == -1) 
-    {
-        fprintf(stderr, "Impossible d'ouvrir l'entrée du tube nommé.\n");
-        exit(EXIT_FAILURE);
-    }
+    mkfifo(nomTube, 0644);
+    entreeTube = open(nomTube, O_WRONLY);
+ 
     write(entreeTube, chaineAEcrire, 20);
 
 
-    //sprintf(res, "%d", n1 + n2);
-    gtk_label_set_text (GTK_LABEL(resultLabel), res);
+    // Lecture du resultat
+/*
+    int sortieTube;
+    char nomCalculGuiTube[20] = "calcul-gui.fifo";
+    char resultatALire[20];
+
+    while((sortieTube = open ("calcul-gui.fifo", O_RDONLY)) == -1)
+    {
+        usleep(20000);
+    }
+
+    read(sortieTube, res, 20);
+    remove("calcul-gui.fifo");
+
+    gtk_label_set_text (GTK_LABEL(resultLabel), res);*/
 }
 
 
