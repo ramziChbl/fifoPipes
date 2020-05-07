@@ -1,7 +1,11 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <stdlib.h>
+#include <unistd.h>
 
+
+//------------ Widgets GTK -------------------------------------
 GtkWidget *window;
 GtkWidget *button;
 GtkWidget *button_box;
@@ -16,6 +20,8 @@ GtkWidget *resultTitleLabel, *resultLabel;
 
 GtkWidget *sumButton, *prodButton, *factButton;
 GtkWidget *quitButton, *traceButton;
+//--------------------------------------------------------------
+
 
 static void print_hello (GtkWidget *widget, gpointer data)
 {
@@ -24,11 +30,30 @@ static void print_hello (GtkWidget *widget, gpointer data)
 
 static void somme (GtkWidget *widget, gpointer data)
 {
-  g_print ("somme\n");
-  int n1 = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry))), n2 = atoi(gtk_entry_get_text ((GTK_ENTRY(op1Entry))));
-  char res[10];
-  sprintf(res, "%d", n1 + n2);
-  gtk_label_set_text (GTK_LABEL(resultLabel), res);
+    int entreeTube;
+    char nomTube[20] = "guiCalcul.fifo";
+
+    int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry))), b = atoi(gtk_entry_get_text ((GTK_ENTRY(op1Entry))));
+    char res[10];
+    char chaineAEcrire[20];
+    sprintf(chaineAEcrire, "1 %d %d",a,b);
+
+    if(mkfifo(nomTube, 0644) != 0) 
+    {
+        fprintf(stderr, "Impossible de créer le tube nommé.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if((entreeTube = open(nomTube, O_WRONLY)) == -1) 
+    {
+        fprintf(stderr, "Impossible d'ouvrir l'entrée du tube nommé.\n");
+        exit(EXIT_FAILURE);
+    }
+    write(entreeTube, chaineAEcrire, 20);
+
+
+    //sprintf(res, "%d", n1 + n2);
+    gtk_label_set_text (GTK_LABEL(resultLabel), res);
 }
 
 

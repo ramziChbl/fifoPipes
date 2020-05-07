@@ -6,6 +6,7 @@
 
 int main(int argc, char const *argv[]){
 	remove("guiCalcul.fifo");
+	remove("calcul-gui.fifo");
 	remove("calcul-trace.fifo");
 
 	if(fork() == 0) // gui process

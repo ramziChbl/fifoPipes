@@ -34,7 +34,7 @@ void saveFact(char op, int opg, long int res)
 int main(int argc, char const *argv[])
 {
     int sortieTube;
-    char chaineALire[10];
+    char chaineALire[20];
     operation op;
     int commande, op1, op2, resultat;
 
@@ -44,9 +44,8 @@ int main(int argc, char const *argv[])
         {
             usleep(20000);
         }
-        //printf("calcul-trace.fifo connecte\n" );
 
-        read(sortieTube, chaineALire, 10);
+        read(sortieTube, chaineALire, 20);
         remove("calcul-trace.fifo");
 
         if(chaineALire[0] == '0')

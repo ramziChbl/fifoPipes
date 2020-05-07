@@ -17,6 +17,7 @@ int main(int argc, char const *argv[])
 	int sortieTube;
 	char chaineALire[20];
 	char chaineAEcrire[20];
+	char chaineResultat[20];
 	//printf("Debut prgm calcul\n");
 
 	while(1)
@@ -26,24 +27,34 @@ int main(int argc, char const *argv[])
 		{
 			usleep(20000);
 		}
-		//printf("guiCalcul.fifo connecte\n" );
 
-		/*if((sortieTube = open ("guiCalcul.fifo", O_RDONLY)) == -1) 
-		{
-			fprintf(stderr, "Impossible d'ouvrir la sortie du tube nommé.\n");
-			exit(EXIT_FAILURE);
-		}*/
-
-		read(sortieTube, chaineALire, 10);
+		read(sortieTube, chaineALire, 20);
 		remove("guiCalcul.fifo");
+
 		int commande, op1, op2, resultat;
 
-		//======================== Calcul to trace ==========================
-		if(fopen("calcul-trace.fifo", "r") != NULL)
+		//======================== Calcul to GUI ==========================
+		remove("calcul-gui.fifo");
+
+		int calculGuiTube;
+		char nomCalculGuiTUbe[20] = "calcul-gui.fifo";
+
+		if(mkfifo(nomCalculGuiTUbe, 0644) != 0) 
 		{
-			remove("calcul-trace.fifo");
+			fprintf(stderr, "Impossible de créer le tube nommé.\n");
+			exit(EXIT_FAILURE);
 		}
 
+		if((calculGuiTube = open(nomCalculGuiTUbe, O_WRONLY)) == -1) 
+		{
+			fprintf(stderr, "Impossible d'ouvrir l'entrée du tube nommé.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		//======================== Calcul to trace ==========================
+
+		remove("calcul-trace.fifo");
+		
 		int entreeTube;
 		char nomTube[20] = "calcul-trace.fifo";
 
@@ -62,7 +73,7 @@ int main(int argc, char const *argv[])
 		switch(chaineALire[0])
 		{
 			case '0':
-				write(entreeTube, "0", 10);
+				write(entreeTube, "0", 20);
 				return 0;
 			break;
 			case '1': // Somme
@@ -85,7 +96,8 @@ int main(int argc, char const *argv[])
 			break;
 		}
 		printf("resultat = %d\n", resultat);
-		write(entreeTube, chaineAEcrire, 10); // Send to trace
+		write(entreeTube, chaineAEcrire, 20); // Send to trace
+		write(calculGuiTube, chaineResultat, 20); // Send to GUI
 	}
 
 	return 0;
