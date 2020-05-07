@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+void savop(char op, int opg, int opd, long int res);
+
 void savop(char op, int opg, int opd, long int res){
     FILE* f; 
     operation lop;

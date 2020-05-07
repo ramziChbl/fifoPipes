@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 //#include "trace.h"
-//#include "calcul.h"
 
 typedef struct 
 { char o;
@@ -11,6 +10,7 @@ typedef struct
   int d;
   long int r;
 } operation;
+
 
 int affichmenu();
 void execomnd(int com);
@@ -71,8 +71,6 @@ void execomnd(int com)
 				exit(EXIT_FAILURE);
 			}
 			write(entreeTube, "0", 10);
-
-			return 0;
  			break;
  		}
 	 	

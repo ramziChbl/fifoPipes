@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "trace.h"
+
+void affichtable(operation t[], int n);
+
 
 //------------ Widgets GTK -------------------------------------
 GtkWidget *window;
@@ -22,17 +26,10 @@ GtkWidget *sumButton, *prodButton, *factButton;
 GtkWidget *quitButton, *traceButton;
 //--------------------------------------------------------------
 
-
-static void print_hello (GtkWidget *widget, gpointer data)
-{
-  g_print ("Hello World\n");
-}
-
 static void somme (GtkWidget *widget, gpointer data)
 {
     int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry)));
     int b = atoi(gtk_entry_get_text ((GTK_ENTRY(op2Entry))));
-
 
     remove("guiCalcul.fifo");
     remove("calcul-gui.fifo");
@@ -42,7 +39,6 @@ static void somme (GtkWidget *widget, gpointer data)
     char chaineAEcrire[20];
     int entreeTube;
     char nomTube[20] = "guiCalcul.fifo";
-
 
     sprintf(chaineAEcrire, "1 %d %d",a,b);
     printf("%s\n", chaineAEcrire);
@@ -63,38 +59,109 @@ static void somme (GtkWidget *widget, gpointer data)
         usleep(20000);
     }
 
-    //sortieTube = open ("calcul-gui.fifo", O_RDONLY);
     read(sortieTube, res, 20);
-
-    //remove("calcul-gui.fifo");
-    printf("res = %s\n", res);
-
     gtk_label_set_text (GTK_LABEL(resultLabel), res);
 }
 
 
 static void produit (GtkWidget *widget, gpointer data)
 {
-  g_print ("produit\n");
+      int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry)));
+    int b = atoi(gtk_entry_get_text ((GTK_ENTRY(op2Entry))));
+
+    remove("guiCalcul.fifo");
+    remove("calcul-gui.fifo");
+    remove("calcul-trace.fifo");
+
+    char res[20];
+    char chaineAEcrire[20];
+    int entreeTube;
+    char nomTube[20] = "guiCalcul.fifo";
+
+
+    sprintf(chaineAEcrire, "2 %d %d",a,b);
+    printf("%s\n", chaineAEcrire);
+
+    mkfifo(nomTube, 0644);
+    entreeTube = open(nomTube, O_WRONLY);
+ 
+    write(entreeTube, chaineAEcrire, 20);
+
+
+    // Lecture du resultat
+    int sortieTube;
+    char nomCalculGuiTube[20] = "calcul-gui.fifo";
+    char resultatALire[20];
+
+    while((sortieTube = open ("calcul-gui.fifo", O_RDONLY)) == -1)
+    {
+        usleep(20000);
+    }
+
+    read(sortieTube, res, 20);
+    gtk_label_set_text (GTK_LABEL(resultLabel), res);
 }
 
 
 static void factorielle (GtkWidget *widget, gpointer data)
 {
-  g_print ("factorielle\n");
+      int a = atoi(gtk_entry_get_text(GTK_ENTRY(op1Entry)));
+    int b = atoi(gtk_entry_get_text ((GTK_ENTRY(op2Entry))));
+
+    remove("guiCalcul.fifo");
+    remove("calcul-gui.fifo");
+    remove("calcul-trace.fifo");
+
+    char res[20];
+    char chaineAEcrire[20];
+    int entreeTube;
+    char nomTube[20] = "guiCalcul.fifo";
+
+
+    sprintf(chaineAEcrire, "3 %d",a);
+    printf("%s\n", chaineAEcrire);
+
+    mkfifo(nomTube, 0644);
+    entreeTube = open(nomTube, O_WRONLY);
+ 
+    write(entreeTube, chaineAEcrire, 20);
+
+
+    // Lecture du resultat
+    int sortieTube;
+    char nomCalculGuiTube[20] = "calcul-gui.fifo";
+    char resultatALire[20];
+
+    while((sortieTube = open ("calcul-gui.fifo", O_RDONLY)) == -1)
+    {
+        usleep(20000);
+    }
+
+    read(sortieTube, res, 20);
+    gtk_label_set_text (GTK_LABEL(resultLabel), res);
 }
 
 
 static void trace (GtkWidget *widget, gpointer data)
 {
   g_print ("trace\n");
+    FILE *ftrack;
+    operation ops[100];
+    
+    ftrack = fopen("track.trc","r+b");
+    if (ftrack == NULL)
+        return;
+
+    int nops = fread(ops,sizeof(operation),100,ftrack);
+    fclose(ftrack);
+    affichtable(ops, nops);
 }
 
 
 static void activate (GtkApplication *app, gpointer user_data)
 {
     window = gtk_application_window_new (app);
-    gtk_window_set_title (GTK_WINDOW (window), "Window");
+    gtk_window_set_title (GTK_WINDOW (window), "TP3 - Pipes and Filters");
     gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
 
 
@@ -131,7 +198,7 @@ static void activate (GtkApplication *app, gpointer user_data)
 
     sumButton = gtk_button_new_with_label ("Somme");
     prodButton = gtk_button_new_with_label ("Produit");
-    factButton = gtk_button_new_with_label ("Fctorielle");
+    factButton = gtk_button_new_with_label ("Factorielle");
     traceButton = gtk_button_new_with_label ("Trace");
     quitButton = gtk_button_new_with_label ("Quitter");
 
@@ -183,5 +250,18 @@ int main(int argc, char **argv)
   g_object_unref (app);
 
   return status;
+}
+
+void affichtable(operation t[], int n){
+    printf("operation ! operande G ! operande D ! resultat !\n");
+    printf("------------------------------------------------\n"); 
+
+    for (int i=0; i<n; i++)
+    { 
+        printf(" %5d    ! %6d     ! %6d     !  %6ld  !\n",t[i].o, t[i].g, t[i].d, t[i].r);
+        printf("----------!------------!------------!----------!\n");
+
+    }   
+
 }
 

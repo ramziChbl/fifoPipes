@@ -5,10 +5,10 @@ typedef struct
   long int r;
 } operation;
 
-typedef operation tabl[10];
+//typedef operation tabl[10];
 
-void savop(char op, int opg, int opd, long int res);
 
-void lireop(tabl* x);
+
+//void lireop(tabl* x);
 
 
