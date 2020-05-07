@@ -21,7 +21,6 @@ int main(int argc, char const *argv[])
 
 	while(1)
 	{
-
 		while((sortieTube = open ("guiCalcul.fifo", O_RDONLY)) == -1)
 		{
 			usleep(20000);
@@ -38,17 +37,8 @@ int main(int argc, char const *argv[])
 		int calculGuiTube;
 		char nomCalculGuiTUbe[20] = "calcul-gui.fifo";
 
-		if(mkfifo(nomCalculGuiTUbe, 0644) != 0) 
-		{
-			fprintf(stderr, "Impossible de créer le tube nommé.\n");
-			exit(EXIT_FAILURE);
-		}
-
-		if((calculGuiTube = open(nomCalculGuiTUbe, O_WRONLY)) == -1) 
-		{
-			fprintf(stderr, "Impossible d'ouvrir l'entrée du tube nommé.\n");
-			exit(EXIT_FAILURE);
-		}*/
+		mkfifo(nomCalculGuiTUbe, 0644);
+		calculGuiTube = open("calcul-gui.fifo", O_WRONLY);*/
 
 		//======================== Calcul vers trace ==========================
 
@@ -77,27 +67,24 @@ int main(int argc, char const *argv[])
 			break;
 			case '1': // Somme
 				sscanf(chaineALire, "%d %d %d", &commande, &op1, &op2);
-				//printf("1 %d %d %d\n", op1, op2, op1 + op2);
 				resultat = op1 + op2;
 				sprintf(chaineAEcrire, "1 %d %d %d\n", op1, op2, resultat);
 				sprintf(chaineResultat, "%d",resultat);
 			break;
 			case '2': // Produit
 				sscanf(chaineALire, "%d %d %d", &commande, &op1, &op2);
-				//printf("2 %d %d %d\n", op1, op2, op1 * op2);
 				resultat = op1 * op2;
 				sprintf(chaineAEcrire, "2 %d %d %d\n", op1, op2, resultat);
 				sprintf(chaineResultat, "%d",resultat);
 			break;
 			case '3': // Factorielle
 				sscanf(chaineALire, "%d %d", &commande, &op1);
-				//printf("3 %d %d\n", op1, fact(op1));
 				resultat = fact(op1);
 				sprintf(chaineAEcrire, "3 %d %d\n", op1, resultat);
 				sprintf(chaineResultat, "%d",resultat);
 			break;
 		}
-		//printf("resultat = %d\n", resultat);
+
 		write(entreeTube, chaineAEcrire, 20); // Send to trace
 		//write(calculGuiTube, chaineResultat, 20); // Send to GUI
 	}

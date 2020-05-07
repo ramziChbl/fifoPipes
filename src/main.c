@@ -5,6 +5,8 @@
 #include <sys/types.h> 
 
 int main(int argc, char const *argv[]){
+
+	//---------- Supprimer le fichiers fifo existants ----------
 	remove("guiCalcul.fifo");
 	remove("calcul-gui.fifo");
 	remove("calcul-trace.fifo");
