@@ -1,5 +1,4 @@
 # fifoPipes
-<<<<<<< HEAD
 A small C calculator to test pipes between processes.
 
 ## Installation
@@ -24,7 +23,3 @@ gcc src/trace.c -o bin/trace
 cd bin/
 ./main
 ```
-
-=======
-A small program to test pipes between processes
->>>>>>> 1bf7829983914502d577f3a71b039fe8a917486a
